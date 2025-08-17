@@ -1,0 +1,23 @@
+package com.Ratan.my_fist_Demo.DTO;
+
+public class Userdto {
+    private String username;
+
+    private String password;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
