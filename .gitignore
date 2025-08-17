@@ -19,6 +19,11 @@ target/
 *.iml
 *.ipr
 
+#
+# Ignore application config (database credentials etc.)
+src/main/resources/application.properties
+src/main/resources/application.yml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
