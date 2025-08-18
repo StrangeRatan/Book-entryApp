@@ -1,10 +1,10 @@
 package com.Ratan.my_fist_Demo.DTO;
 
-public class Userdto {
+public class UserDto {
     private  Long id;
     private String username;
 
-    private String password;
+
 
     public Long getId() {
         return id;
@@ -22,11 +22,4 @@ public class Userdto {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
