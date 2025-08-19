@@ -7,6 +7,7 @@ import com.Ratan.my_fist_Demo.Entity.UserEntity;
 import com.Ratan.my_fist_Demo.Repository.UserRepository;
 import com.Ratan.my_fist_Demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,13 +20,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private  UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
 
     @Override
     public UserDto createUser(SigupDto sigupDto){
         UserEntity newUser=new UserEntity();
         newUser.setUsername(sigupDto.getUsername());
-        newUser.setPassword(sigupDto.getPassword());
+        newUser.setPassword(passwordEncoder.encode(sigupDto.getPassword()));
         UserEntity saved = userRepository.save(newUser);
 
         UserDto newUserDto=new UserDto();
@@ -70,7 +74,7 @@ public class UserServiceImpl implements UserService {
             UserEntity user=userOption.get();
             user.setUsername(sigupDto.getUsername());
             if(sigupDto.getPassword() !=null && !sigupDto.getPassword().isEmpty()){
-                user.setPassword(sigupDto.getPassword());
+                user.setPassword(passwordEncoder.encode(sigupDto.getPassword()));
             }
              userRepository.save(user);
 
