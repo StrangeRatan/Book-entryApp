@@ -95,6 +95,16 @@ public class UserServiceImpl implements UserService {
     }
         userRepository.deleteById(id);
    }
+
+   public UserEntity findByUsername(String username){
+        return userRepository.findByUsername(username);
+   }
+
+    public UserEntity save(UserEntity user) {
+        return userRepository.save(user);
+    }
+
+
 }
 
 

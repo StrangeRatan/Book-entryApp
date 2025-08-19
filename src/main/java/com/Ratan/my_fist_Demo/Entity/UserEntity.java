@@ -1,5 +1,6 @@
 package com.Ratan.my_fist_Demo.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne
-    @JoinColumn(name="serialNo")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<BookEntity> collection =new ArrayList<>();
 
     public List<BookEntity> getCollection() {

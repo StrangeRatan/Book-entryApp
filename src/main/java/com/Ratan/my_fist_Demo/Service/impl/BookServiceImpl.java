@@ -1,14 +1,15 @@
 package com.Ratan.my_fist_Demo.Service.impl;
 
+import com.Ratan.my_fist_Demo.DTO.SigupDto;
 import com.Ratan.my_fist_Demo.Entity.BookEntity;
 import com.Ratan.my_fist_Demo.Entity.UserEntity;
 import com.Ratan.my_fist_Demo.Repository.BookRepository;
 import com.Ratan.my_fist_Demo.Repository.UserRepository;
 import com.Ratan.my_fist_Demo.Service.BookService;
+import com.Ratan.my_fist_Demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +24,19 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    public BookEntity getBook(BookEntity bookEntity) {
+    @Autowired
+    private UserService userService;
 
-        BookEntity newbook=new BookEntity();
-        newbook.setAuthorname(bookEntity.getAuthorname());
-        newbook.setBooktitle(bookEntity.getBooktitle());
-        newbook.setDate(LocalDateTime.now());
-        BookEntity save = bookRepository.save(newbook);
-        return save;
+    @Override
+    public BookEntity getBook(BookEntity bookEntity, String username) {
+        UserEntity user = userService.findByUsername(username);
+        bookEntity.setDate(LocalDateTime.now());
+        bookEntity.setUser(user);
+//        BookEntity saved = bookRepository.save(bookEntity);
+//        user.getCollection().add(bookEntity);
+//         userService.save(user);
+
+        return bookRepository.save(bookEntity);
 
     }
 

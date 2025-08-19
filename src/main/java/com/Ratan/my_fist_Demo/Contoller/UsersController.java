@@ -18,7 +18,7 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<?> getAllUsers(){
         List<UserDto> all=userService.getAllUsers();
         if(all !=null && !all.isEmpty()){

@@ -1,5 +1,6 @@
 package com.Ratan.my_fist_Demo.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.lang.NonNull;
@@ -14,13 +15,26 @@ public class BookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serialNo;
 
-    @NonNull
+    @Column(nullable = false)
     private String authorname;
 
-    @NonNull
+    @Column(nullable = false)
     private String booktitle;
 
     private LocalDateTime date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")  // foreign key in Book table
+    @JsonBackReference
+    private UserEntity user;
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 
     public Long getSerialNo() {
         return serialNo;
@@ -30,21 +44,19 @@ public class BookEntity {
         this.serialNo = serialNo;
     }
 
-    @NonNull
     public String getAuthorname() {
         return authorname;
     }
 
-    public void setAuthorname(@NonNull String authorname) {
+    public void setAuthorname(String authorname) {
         this.authorname = authorname;
     }
 
-    @NonNull
     public String getBooktitle() {
         return booktitle;
     }
 
-    public void setBooktitle(@NonNull String booktitle) {
+    public void setBooktitle(String booktitle) {
         this.booktitle = booktitle;
     }
 
