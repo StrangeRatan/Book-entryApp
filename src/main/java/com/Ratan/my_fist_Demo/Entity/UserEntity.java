@@ -2,6 +2,9 @@ package com.Ratan.my_fist_Demo.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="user")
 public class UserEntity {
@@ -15,6 +18,18 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToOne
+    @JoinColumn(name="serialNo")
+    private List<BookEntity> collection =new ArrayList<>();
+
+    public List<BookEntity> getCollection() {
+        return collection;
+    }
+
+    public void setCollection(List<BookEntity> collection) {
+        this.collection = collection;
+    }
 
     public Long getId() {
         return id;

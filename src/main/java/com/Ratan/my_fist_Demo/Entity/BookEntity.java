@@ -1,16 +1,17 @@
 package com.Ratan.my_fist_Demo.Entity;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Table(name="Book")
 public class BookEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serialNo;
 
     @NonNull
