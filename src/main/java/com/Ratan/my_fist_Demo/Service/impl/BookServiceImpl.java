@@ -6,6 +6,7 @@ import com.Ratan.my_fist_Demo.Repository.BookRepository;
 import com.Ratan.my_fist_Demo.Repository.UserRepository;
 import com.Ratan.my_fist_Demo.Service.BookService;
 import com.Ratan.my_fist_Demo.Service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +28,15 @@ public class BookServiceImpl implements BookService {
     private UserService userService;
 
     @Override
+    @Transactional
     public BookEntity getBook(BookEntity bookEntity, String username) {
+
         UserEntity user = userService.findByUsername(username);
         bookEntity.setDate(LocalDateTime.now());
         bookEntity.setUser(user);
         BookEntity saved = bookRepository.save(bookEntity);
         user.getCollection().add(saved);
-
-
         return saved;
-
     }
 
     @Override

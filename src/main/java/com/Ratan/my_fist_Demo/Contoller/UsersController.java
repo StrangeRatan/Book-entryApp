@@ -20,6 +20,7 @@ public class UsersController {
 
     @GetMapping()
     public ResponseEntity<?> getAllUsers(){
+
         List<UserDto> all=userService.getAllUsers();
         if(all !=null && !all.isEmpty()){
             return new ResponseEntity<>(all, HttpStatus.OK);
@@ -27,12 +28,12 @@ public class UsersController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody SigupDto newUser){
-        UserDto user = userService.createUser(newUser);
-        return new ResponseEntity<>(user,HttpStatus.CREATED);
-
-    }
+//    @PostMapping
+//    public ResponseEntity<?> createUser(@RequestBody SigupDto newUser){
+//        UserDto user = userService.createUser(newUser);
+//        return new ResponseEntity<>(user,HttpStatus.CREATED);
+//
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUsersBy(@PathVariable Long id){

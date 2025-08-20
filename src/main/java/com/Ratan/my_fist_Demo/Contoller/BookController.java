@@ -8,6 +8,8 @@ import com.Ratan.my_fist_Demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,23 +25,28 @@ public class BookController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{username}")
-    ResponseEntity<?> seeAllBook(@PathVariable String username){
+    @GetMapping
+    ResponseEntity<?> seeAllBook(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
         UserEntity user= userService.findByUsername(username);
         List<BookEntity> all=user.getCollection();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
-    @PostMapping("/{username}")
-    ResponseEntity<?> getBook(@RequestBody BookEntity newBook,@PathVariable String username){
-
+    @PostMapping
+    ResponseEntity<?> getBook(@RequestBody BookEntity newBook){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
         BookEntity book = bookService.getBook(newBook,username);
 
         return new ResponseEntity<>(book,HttpStatus.CREATED);
     }
 
-    @GetMapping("/{username}/{serialNo}")
-    ResponseEntity<?> seeBookById(@PathVariable Long serialNo,@PathVariable String username){
+    @GetMapping("/{serialNo}")
+    ResponseEntity<?> seeBookById(@PathVariable Long serialNo){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
         UserEntity user=userService.findByUsername(username);
         if(user !=null){
             BookEntity bookById = bookService.seeBookById(serialNo);
@@ -57,19 +64,27 @@ public class BookController {
 
 
     }
-    @PutMapping("/{username}/{serialNo}")
-    ResponseEntity<?> updateBook(@PathVariable Long serialNo, @PathVariable String username, @RequestBody BookEntity newBookEntity){
+    @PutMapping("/{serialNo}")
+    ResponseEntity<?> updateBook(@PathVariable Long serialNo, @RequestBody BookEntity newBookEntity){
 
-        BookEntity bookEntity = bookService.updateBookById(serialNo, newBookEntity,username);
-        if(bookEntity !=null){
-            return new ResponseEntity<>(bookEntity,HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username=authentication.getName();
+
+            BookEntity bookEntity = bookService.updateBookById(serialNo, newBookEntity,username);
+            if(bookEntity !=null){
+                return new ResponseEntity<>(bookEntity,HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+
+
     }
-    @DeleteMapping("/{username}/{serialNo}")
-    ResponseEntity<?> deleteBookById(@PathVariable Long serialNo,@PathVariable String username){
+    @DeleteMapping("/{serialNo}")
+    ResponseEntity<?> deleteBookById(@PathVariable Long serialNo){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username=authentication.getName();
         bookService.deleteBookById(serialNo,username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
