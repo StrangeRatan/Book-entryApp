@@ -1,6 +1,5 @@
 package com.Ratan.my_fist_Demo.Service.impl;
 
-import com.Ratan.my_fist_Demo.DTO.SigupDto;
 import com.Ratan.my_fist_Demo.Entity.BookEntity;
 import com.Ratan.my_fist_Demo.Entity.UserEntity;
 import com.Ratan.my_fist_Demo.Repository.BookRepository;
@@ -32,11 +31,11 @@ public class BookServiceImpl implements BookService {
         UserEntity user = userService.findByUsername(username);
         bookEntity.setDate(LocalDateTime.now());
         bookEntity.setUser(user);
-//        BookEntity saved = bookRepository.save(bookEntity);
-//        user.getCollection().add(bookEntity);
-//         userService.save(user);
+        BookEntity saved = bookRepository.save(bookEntity);
+        user.getCollection().add(saved);
 
-        return bookRepository.save(bookEntity);
+
+        return saved;
 
     }
 
@@ -60,19 +59,38 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookEntity updateBookById(Long id,BookEntity newBook) {
-        Optional<BookEntity> oldbook = bookRepository.findById(id);
-        if(oldbook.isPresent()){
-            BookEntity lestestBook=oldbook.get();
-            lestestBook.setBooktitle(newBook.getBooktitle());
-            lestestBook.setAuthorname(newBook.getAuthorname());
-            return bookRepository.save(lestestBook);
+    public BookEntity updateBookById(Long id, BookEntity newBook, String username) {
+        UserEntity user = userService.findByUsername(username);
+        if(user !=null){
+            Optional<BookEntity> oldbook = bookRepository.findById(id);
+            if(oldbook.isPresent()){
+                BookEntity lestestBook=oldbook.get();
+                lestestBook.setBooktitle(newBook.getBooktitle());
+                lestestBook.setAuthorname(newBook.getAuthorname());
+                return bookRepository.save(lestestBook);
+            }
+            return null;
         }
+
         return null;
     }
 
     @Override
-    public void deleteBookById(Long id) {
-     bookRepository.deleteById(id);
-    }
+    public void deleteBookById(Long id, String username) {
+        UserEntity user = userService.findByUsername(username);
+        if(user !=null){
+            Optional<BookEntity> book = bookRepository.findById(id);
+            if(book.isPresent()){
+                BookEntity bookEntity=book.get();
+                if(bookEntity.getUser().getUsername().equals(username)){
+                    user.getCollection().remove(bookEntity);
+                    bookRepository.delete(bookEntity);
+                    userService.save(user);
+                }
+
+                }
+            }
+
+        }
+
 }

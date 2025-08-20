@@ -8,7 +8,10 @@ import org.springframework.lang.NonNull;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="Book")
+@Table(name = "book",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "authorname", "booktitle"})
+        })
 public class BookEntity {
 
     @Id

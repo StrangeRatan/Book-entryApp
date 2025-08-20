@@ -3,6 +3,7 @@ package com.Ratan.my_fist_Demo.Service.impl;
 
 import com.Ratan.my_fist_Demo.DTO.SigupDto;
 import com.Ratan.my_fist_Demo.DTO.UserDto;
+import com.Ratan.my_fist_Demo.Entity.BookEntity;
 import com.Ratan.my_fist_Demo.Entity.UserEntity;
 import com.Ratan.my_fist_Demo.Repository.UserRepository;
 import com.Ratan.my_fist_Demo.Service.UserService;
@@ -47,6 +48,11 @@ public class UserServiceImpl implements UserService {
             UserDto userdto=new UserDto();
             userdto.setId(user.getId());
             userdto.setUsername(user.getUsername());
+            List<BookEntity> books = new ArrayList<>();
+            for(BookEntity book : user.getCollection()){
+                books.add(book);
+            }
+            userdto.setCollection(books);
             userdtos.add(userdto);
         }
         return userdtos;

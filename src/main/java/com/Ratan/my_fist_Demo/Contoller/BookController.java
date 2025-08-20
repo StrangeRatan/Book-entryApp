@@ -38,20 +38,29 @@ public class BookController {
         return new ResponseEntity<>(book,HttpStatus.CREATED);
     }
 
-    @GetMapping("/bookid/{serialNo}")
-    ResponseEntity<?> seeBookById(@PathVariable Long serialNo){
-        BookEntity bookById = bookService.seeBookById(serialNo);
-        if(bookById !=null){
-        return  new ResponseEntity<>(bookById,HttpStatus.OK);
+    @GetMapping("/{username}/{serialNo}")
+    ResponseEntity<?> seeBookById(@PathVariable Long serialNo,@PathVariable String username){
+        UserEntity user=userService.findByUsername(username);
+        if(user !=null){
+            BookEntity bookById = bookService.seeBookById(serialNo);
+            if(bookById !=null){
+                return  new ResponseEntity<>(bookById,HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
         }
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+
     }
-    @PutMapping("/{serialNo}")
-    ResponseEntity<?> updateBook(@PathVariable Long serialNo, @RequestBody BookEntity newBookEntity){
-        BookEntity bookEntity = bookService.updateBookById(serialNo, newBookEntity);
+    @PutMapping("/{username}/{serialNo}")
+    ResponseEntity<?> updateBook(@PathVariable Long serialNo, @PathVariable String username, @RequestBody BookEntity newBookEntity){
+
+        BookEntity bookEntity = bookService.updateBookById(serialNo, newBookEntity,username);
         if(bookEntity !=null){
             return new ResponseEntity<>(bookEntity,HttpStatus.OK);
         }
@@ -59,9 +68,9 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/{serialNo}")
-    ResponseEntity<?> deleteBookById(@PathVariable Long serialNo){
-        bookService.deleteBookById(serialNo);
+    @DeleteMapping("/{username}/{serialNo}")
+    ResponseEntity<?> deleteBookById(@PathVariable Long serialNo,@PathVariable String username){
+        bookService.deleteBookById(serialNo,username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
