@@ -1,5 +1,6 @@
 package com.Ratan.my_fist_Demo.Contoller;
 
+import com.Ratan.my_fist_Demo.DTO.BookDto;
 import com.Ratan.my_fist_Demo.DTO.SigupDto;
 import com.Ratan.my_fist_Demo.Entity.BookEntity;
 import com.Ratan.my_fist_Demo.Entity.UserEntity;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/BooksEntry")
 public class BookController {
 
     @Autowired
@@ -25,7 +26,7 @@ public class BookController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/get-allEntry")
     ResponseEntity<?> seeAllBook(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username=authentication.getName();
@@ -34,22 +35,22 @@ public class BookController {
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
-    @PostMapping
-    ResponseEntity<?> getBook(@RequestBody BookEntity newBook){
+    @PostMapping("/insert-Book")
+    ResponseEntity<?> getBook(@RequestBody BookDto newBook){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username=authentication.getName();
-        BookEntity book = bookService.getBook(newBook,username);
+        BookDto book = bookService.getBook(newBook,username);
 
         return new ResponseEntity<>(book,HttpStatus.CREATED);
     }
 
-    @GetMapping("/{serialNo}")
+    @GetMapping("/get-EntryBySN/{serialNo}")
     ResponseEntity<?> seeBookById(@PathVariable Long serialNo){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username=authentication.getName();
         UserEntity user=userService.findByUsername(username);
         if(user !=null){
-            BookEntity bookById = bookService.seeBookById(serialNo);
+            BookDto bookById = bookService.seeBookById(serialNo);
             if(bookById !=null){
                 return  new ResponseEntity<>(bookById,HttpStatus.OK);
             }
@@ -64,15 +65,15 @@ public class BookController {
 
 
     }
-    @PutMapping("/{serialNo}")
-    ResponseEntity<?> updateBook(@PathVariable Long serialNo, @RequestBody BookEntity newBookEntity){
+    @PutMapping("/update-BookBySN/{serialNo}")
+    ResponseEntity<?> updateBook(@PathVariable Long serialNo, @RequestBody BookDto newBookEntity){
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username=authentication.getName();
 
-            BookEntity bookEntity = bookService.updateBookById(serialNo, newBookEntity,username);
-            if(bookEntity !=null){
-                return new ResponseEntity<>(bookEntity,HttpStatus.OK);
+            BookDto bookDto = bookService.updateBookById(serialNo, newBookEntity,username);
+            if(bookDto !=null){
+                return new ResponseEntity<>(bookDto,HttpStatus.OK);
             }
             else{
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -81,7 +82,7 @@ public class BookController {
 
 
     }
-    @DeleteMapping("/{serialNo}")
+    @DeleteMapping("/delete-BookBySN/{serialNo}")
     ResponseEntity<?> deleteBookById(@PathVariable Long serialNo){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username=authentication.getName();

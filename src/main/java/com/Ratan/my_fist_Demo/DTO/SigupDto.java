@@ -9,6 +9,15 @@ public class SigupDto {
     private String username;
     private String password;
     private List<BookEntity> collection =new ArrayList<>();
+    private String roles;
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
     public List<BookEntity> getCollection() {
         return collection;

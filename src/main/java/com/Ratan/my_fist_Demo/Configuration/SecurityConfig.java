@@ -39,7 +39,8 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request ->request
                 .requestMatchers("/public/**").permitAll()
-                .requestMatchers("/Books/**","/user/**").authenticated()
+                .requestMatchers("/BooksEntry/**","/user/**").authenticated()
+                .requestMatchers("/Admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer ::disable)

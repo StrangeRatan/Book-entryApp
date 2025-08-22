@@ -1,12 +1,17 @@
 package com.Ratan.my_fist_Demo.Contoller;
 
+import com.Ratan.my_fist_Demo.ApiResponse.weatherpojo;
 import com.Ratan.my_fist_Demo.DTO.SigupDto;
 import com.Ratan.my_fist_Demo.DTO.UserDto;
+import com.Ratan.my_fist_Demo.Entity.UserEntity;
+import com.Ratan.my_fist_Demo.Repository.UserRepository;
 import com.Ratan.my_fist_Demo.Service.UserService;
-import org.apache.catalina.User;
+import com.Ratan.my_fist_Demo.Service.WeathService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,28 +23,18 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
-    public ResponseEntity<?> getAllUsers(){
+    @Autowired
+    private UserRepository userRepository;
 
-        List<UserDto> all=userService.getAllUsers();
-        if(all !=null && !all.isEmpty()){
-            return new ResponseEntity<>(all, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    @Autowired
+    private WeathService weathService;
 
-//    @PostMapping
-//    public ResponseEntity<?> createUser(@RequestBody SigupDto newUser){
-//        UserDto user = userService.createUser(newUser);
-//        return new ResponseEntity<>(user,HttpStatus.CREATED);
-//
-//    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUsersBy(@PathVariable Long id){
-        UserDto userById = userService.getUserById(id);
-        if(userById !=null){
-        return new ResponseEntity<>(userById,HttpStatus.OK);
+    @GetMapping("/getProfile")
+    public ResponseEntity<?> getUsersBy(Authentication authentication){
+        String name = authentication.getName();
+        UserEntity user=userRepository.findByUsername(name);
+        if(user !=null){
+        return new ResponseEntity<>(user,HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,9 +42,9 @@ public class UsersController {
 
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody SigupDto sigupDto){
-        UserDto userDto = userService.updateUserbyId(id, sigupDto);
+    @PutMapping("/update-Profile/{byId}")
+    public ResponseEntity<?> updateUserById(@PathVariable Long byId, @RequestBody SigupDto sigupDto){
+        UserDto userDto = userService.updateUserbyId(byId, sigupDto);
         if(userDto.getId() !=null){
             return new ResponseEntity<>(userDto,HttpStatus.OK);
         }
@@ -58,15 +53,26 @@ public class UsersController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id){
-        UserDto userById = userService.getUserById(id);
+    @DeleteMapping("/delete-Profile/{byId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long byId){
+        UserDto userById = userService.getUserById(byId);
         if(userById != null){
-            userService.deleteByUserId(id);
+            userService.deleteByUserId(byId);
             return new ResponseEntity<>(HttpStatus.OK);
         }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> greeting() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        weatherpojo weatherResponse = weathService.getWeather("Varanasi");
+        String greeting = "";
+        if(weatherResponse !=null){
+            greeting = ", Weather feels like " + weatherResponse.getCurrent().getFeelslike();
+        }
+        return new ResponseEntity<>("Hi " + authentication.getName() + greeting, HttpStatus.OK);
     }
 
 }

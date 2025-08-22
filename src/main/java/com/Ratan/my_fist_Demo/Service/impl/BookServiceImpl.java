@@ -1,5 +1,6 @@
 package com.Ratan.my_fist_Demo.Service.impl;
 
+import com.Ratan.my_fist_Demo.DTO.BookDto;
 import com.Ratan.my_fist_Demo.Entity.BookEntity;
 import com.Ratan.my_fist_Demo.Entity.UserEntity;
 import com.Ratan.my_fist_Demo.Repository.BookRepository;
@@ -29,28 +30,55 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookEntity getBook(BookEntity bookEntity, String username) {
-
+    public BookDto getBook(BookDto bookDto, String username) {
         UserEntity user = userService.findByUsername(username);
+
+        BookEntity bookEntity=new BookEntity();
         bookEntity.setDate(LocalDateTime.now());
         bookEntity.setUser(user);
+        bookEntity.setSerialNo(bookDto.getSerialNo());
+        bookEntity.setAuthorname(bookDto.getAuthorname());
+        bookEntity.setBooktitle(bookDto.getBooktitle());
         BookEntity saved = bookRepository.save(bookEntity);
         user.getCollection().add(saved);
-        return saved;
+        BookDto entry=new BookDto();
+        entry.setSerialNo(saved.getSerialNo());
+        entry.setAuthorname(saved.getAuthorname());
+        entry.setBooktitle(saved.getBooktitle());
+        entry.setDate(saved.getDate());
+
+        return entry;
     }
 
     @Override
-    public List<BookEntity> seeAllBook() {
-        List<BookEntity> list=new ArrayList<>();
-        list.addAll(bookRepository.findAll());
+    public List<BookDto> seeAllBook() {
+        List<BookDto> list=new ArrayList<>();
+        List<BookEntity>  bookEntities=new ArrayList<>();
+        bookEntities.addAll(bookRepository.findAll());
+        for(BookEntity bookEntity : bookEntities){
+            BookDto bookDto=new BookDto();
+            bookDto.setSerialNo(bookEntity.getSerialNo());
+            bookDto.setAuthorname(bookEntity.getAuthorname());
+            bookDto.setBooktitle(bookEntity.getBooktitle());
+            bookDto.setDate(bookEntity.getDate());
+            list.add(bookDto);
+
+        }
         return list;
     }
 
     @Override
-    public BookEntity seeBookById(Long id) {
+    public BookDto seeBookById(Long id) {
         Optional<BookEntity> byId = bookRepository.findById(id);
+
         if(byId.isPresent()){
-            return byId.get();
+            BookEntity bookEntity=byId.get();
+            BookDto bookDto=new BookDto();
+            bookDto.setSerialNo(bookEntity.getSerialNo());
+            bookDto.setAuthorname(bookEntity.getAuthorname());
+            bookDto.setBooktitle(bookEntity.getBooktitle());
+            bookDto.setDate(bookEntity.getDate());
+           return bookDto;
 
         }
         else{
@@ -59,15 +87,23 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookEntity updateBookById(Long id, BookEntity newBook, String username) {
+    public BookDto updateBookById(Long id, BookDto newBook, String username) {
         UserEntity user = userService.findByUsername(username);
         if(user !=null){
             Optional<BookEntity> oldbook = bookRepository.findById(id);
             if(oldbook.isPresent()){
+
                 BookEntity lestestBook=oldbook.get();
                 lestestBook.setBooktitle(newBook.getBooktitle());
                 lestestBook.setAuthorname(newBook.getAuthorname());
-                return bookRepository.save(lestestBook);
+                BookEntity saved = bookRepository.save(lestestBook);
+                BookDto bookDto=new BookDto();
+                bookDto.setSerialNo(id);
+                bookDto.setAuthorname(saved.getAuthorname());
+                bookDto.setBooktitle(saved.getBooktitle());
+                bookDto.setDate(saved.getDate());
+
+                return bookDto;
             }
             return null;
         }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController  //Marks class as REST controller (returns data, not view)
 @RequestMapping("/public")  //Base path for all endpoints inside this class
-public class HealthCheck {
+public class PublicController {
 
     @Autowired
     private UserService userService;
